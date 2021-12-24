@@ -53,8 +53,12 @@ class Mqtt:
         self._notify_watchers(True)
 
         for topic in self._subscribe_map:
-            result, mid = self._client.subscribe(topic)
-            logging.info('Subscribe "%s" [%s] %s', topic, paho.mqtt.client.error_string(result), mid)
+            result, _mid = self._client.subscribe(topic)
+            error = paho.mqtt.client.error_string(result)
+            if error != 'No error.':
+                logging.warning('Subscribe "%s" with %s', topic, error)
+            else:
+                logging.debug('Subscribe "%s"', topic)
 
     def run(self):
         return gevent.spawn(self._run_loop)
@@ -91,11 +95,11 @@ class Mqtt:
         try:
             payload = message.payload.decode()
             retained = ' (retained)' if message.retain else ''
-            logging.debug("Received %s: %s%s", message.topic, payload, retained)
+            logging.debug('Received "%s": %s%s', message.topic, payload, retained)
             for listener in self._subscribe_map[message.topic]:
                 try:
                     listener(payload, message.timestamp)
-                except Exception:
+                except Exception:       # pylint: disable=W0703
                     logging.exception('Handling MQTT message')
                     sys.exit(1)
         except KeyError:

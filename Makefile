@@ -12,7 +12,7 @@ check:
 	                                         -d line-too-long \
 	                                         -d no-self-use \
 	                                         -d too-many-arguments \
-	|| true  # Ignore issues in pylint, just show the report
+	|| true
 
 test:
 	pytest ./tests/ -vvv --junitxml=./reports/unittest-results.xml
