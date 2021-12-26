@@ -9,13 +9,14 @@ from mqtt_panel.web.wslink import WSLink
 from mqtt_panel.web.webbase import WebBase
 from mqtt_panel.web.panels import Panels
 from mqtt_panel.web.widget.widget import Widget
-from mqtt_panel.util import blob_hash, write_javascript, write_html, write_style
+from mqtt_panel.util import write_javascript, write_html, write_style
 
 
 class App(WebBase):
     def __init__(self):
         super().__init__({})
 
+        self._identity = None
         self._titlebar = TitleBar()
         self._menubar = MenuBar()
         self._screen_overlay = ScreenOverlay()
@@ -33,7 +34,7 @@ class App(WebBase):
 
     def open(self):
         self._panels.open()
-        self._identity = blob_hash([self._panels.identity])
+        self._identity = self._panels.identity
 
     def add_panel(self, panel):
         self._panels.add_panel(panel)

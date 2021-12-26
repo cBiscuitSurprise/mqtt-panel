@@ -1,5 +1,5 @@
 from mqtt_panel.web.component import Component
-
+from mqtt_panel.util import blob_hash
 
 class Panels(Component):
     def __init__(self):
@@ -18,3 +18,4 @@ class Panels(Component):
     def open(self):
         for panel in self._panels:
             panel.open()
+        self._identity = blob_hash([p.identity for p in self._panels])
